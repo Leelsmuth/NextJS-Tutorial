@@ -1,17 +1,13 @@
 import headerStyles from '../styles/Header.module.css';
 
 const Header = () => {
-  const x = 7;
+
   return (
     <div>
-      <h1 className="title"><span>WebDev</span> News</h1>
-      <style jsx>
-        {`
-          .title {
-            color: ${x === 5 ? 'red' : 'blue'}
-          }
-        `}
-      </style>
+      <h1 className={headerStyles.title}>
+        <span>WebDev</span> News
+      </h1>
+      <p className={headerStyles.description}>Keep up to date with the latest WebDev news.</p>
     </div>
   );
 };
