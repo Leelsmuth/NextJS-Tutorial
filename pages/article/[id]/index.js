@@ -1,3 +1,5 @@
+import { server } from '../../../config';
+import Meta from '../../../components/Meta';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
@@ -11,8 +13,9 @@ const Article = ({ article }) => {
     //   this is an article {id}
     // </div>
     <>
+      <Meta title={article.title} description={article.excerpt} />
       <h1>{article.title}</h1>
-      <p>{article.body}</p>
+      <p>{article.excerpt}</p>
       <br />
       <Link href='/'>
         Go Back
@@ -21,8 +24,8 @@ const Article = ({ article }) => {
   );
 };
 
-export const getServerSideProps = async (ctx) => {
-  const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${ctx.params.id}`);
+export const getStaticProps = async (ctx) => {
+  const res = await fetch(`${server}/api/articles/${ctx.params.id}`);
 
   const article = await res.json();
 
@@ -32,5 +35,53 @@ export const getServerSideProps = async (ctx) => {
     }
   };
 };
+
+export const getStaticPaths = async () => {
+  const res = await fetch(`${server}/api/articles`);
+
+  const articles = await res.json();
+
+  const ids = articles.map((article) => article.id);
+  const paths = ids.map((id) => ({
+    params: {
+      id: id.toString()
+    }
+  }));
+
+  return {
+    paths,
+    fallback: false
+  };
+};
+
+// export const getStaticProps = async (ctx) => {
+//   const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${ctx.params.id}`);
+
+//   const article = await res.json();
+
+//   return {
+//     props: {
+//       article
+//     }
+//   };
+// };
+
+// export const getStaticPaths = async () => {
+//   const res = await fetch(`https://jsonplaceholder.typicode.com/posts`);
+
+//   const articles = await res.json();
+
+//   const ids = articles.map((article) => article.id);
+//   const paths = ids.map((id) => ({
+//     params: {
+//       id: id.toString()
+//     }
+//   }));
+
+//   return {
+//     paths,
+//     fallback: false
+//   };
+// };
 
 export default Article;
